@@ -3,7 +3,10 @@ import numpy as np
 import sys
 import psycopg2
 import utils
-from tqdm import tqdm
+import importlib
+from tqdm.notebook import tqdm
+importlib.reload(utils)
+
 
 class postgres_conn:
     def getConn(self):
@@ -32,14 +35,14 @@ class postgres_conn:
             connection.close()
             print("PostgreSQL connection is closed")
 
-def getAplusImageData(asinTuple):
+def getAplusImageData(asinTuple,date_):
     pg = postgres_conn()
     conn = pg.getConn()
     
 
     query_readyprod = f""" 
-    Select DISTINCT a.brand, a.channel_sku_id,b.aplus_images,b.aplus_text from entity.product_feature_mapping a left join 
-    ready.ready_product_details b  on a.channel_sku_id = b.asin where b.asin in {asinTuple} """
+    Select DISTINCT a.brand, a.channel_sku_id,b.asin,b.aplus_images,b.aplus_text from ready.ready_product_details b left join entity.product_feature_mapping a  
+      on a.channel_sku_id = b.asin where b.asin in {asinTuple} and DATE(b.crawl_time) = '{date_}' """
 
     df_readyprod = pd.read_sql_query(query_readyprod, conn[1])
     df_readyprod = df_readyprod.explode('aplus_images',ignore_index=True)
@@ -78,7 +81,7 @@ def getImagesDetails(df,asinImageFile,imgType):
         print(image)
         try:
             word_dict,response = utils.getImgDetails(image)
-            print(word_dict)
+            # print(word_dict)
         except:
             print("*******",sys.exc_info())
             word_dict = {}

@@ -11,7 +11,7 @@ import psycopg2
 
 #####################################################
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'C:\Users\Administrator\Desktop\VGB\ScoringContent\ScoringContent_app\controllers\api\credible-art-300905-b1003e20f32c.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'C:\Users\Administrator\Desktop\VGB\flipkart_contentScores\api\controllers\auth\credible-art-300905-b1003e20f32c.json'
 client = vision.ImageAnnotatorClient()
 
 #####################################################
